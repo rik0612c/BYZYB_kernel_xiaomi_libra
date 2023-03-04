@@ -234,6 +234,9 @@ export KCONFIG_CONFIG
 CONFIG_SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; \
 	  else if [ -x /bin/bash ]; then echo /bin/bash; \
 	  else echo sh; fi ; fi)
+HOST_LFS_CFLAGS := $(shell getconf LFS_CFLAGS 2>/dev/null)
+HOST_LFS_LDFLAGS := $(shell getconf LFS_LDFLAGS 2>/dev/null)
+HOST_LFS_LIBS := $(shell getconf LFS_LIBS 2>/dev/null)
 
 ifneq ($(cc-name),clang)
 HOSTCC = gcc
@@ -244,6 +247,8 @@ HOSTCXX = clang++
 endif
 HOSTCFLAGS := -Ofast -fomit-frame-pointer -pipe
 HOSTCXXFLAGS := -Ofast -pipe
+
+HOSTLDFLAGS  += $(HOST_LFS_LDFLAGS)
 
 # Decide whether to build built-in, modular, or both.
 # Normally, just do built-in.
@@ -333,6 +338,8 @@ CFLAGS_GCOV := -fprofile-arcs -ftest-coverage -fno-tree-loop-im
 CFLAGS_KERNEL :=
 CFLAGS_MODULE :=
 CHECK := sparse
+HOSTLDFLAGS	+= -fuse-ld=lld
+HOSTCFLAGS += -fuse-ld=lld
 CHECKFLAGS := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ -Wno-return-void $(CF)
 CLANG_FLAGS :=
 CPP := $(CC) -E
@@ -379,6 +386,7 @@ NM := llvm-nm
 OBJCOPY := llvm-objcopy
 OBJDUMP := llvm-objdump
 STRIP := llvm-strip
+
 KBUILD_CFLAGS += \
 		-fdiagnostics-color \
 		-mcpu=cortex-a53 \
