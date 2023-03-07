@@ -390,7 +390,16 @@ STRIP := llvm-strip
 KBUILD_CFLAGS += \
 		-fdiagnostics-color \
 		-mcpu=cortex-a53 \
-		-mtune=cortex-a53
+		-mtune=cortex-a53 \
+		-mllvm -polly \
+		-mllvm -polly-ast-use-context \
+		-mllvm -polly-detect-keep-going \
+		-mllvm -polly-invariant-load-hoisting \
+		-mllvm -polly-loopfusion-greedy \
+		-mllvm -polly-run-dce \
+		-mllvm -polly-run-inliner \
+		-mllvm -polly-vectorizer=stripmine
+		
 KBUILD_AFLAGS += \
 		-mcpu=cortex-a53 \
 		-mtune=cortex-a53
